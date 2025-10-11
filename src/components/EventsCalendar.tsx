@@ -9,7 +9,7 @@ interface Event {
   time: string;
   location: string;
   description: string;
-  type: 'tournament' | 'workshop' | 'trade' | 'special';
+  type: 'show';
   color: string;
 }
 
@@ -19,44 +19,24 @@ export default function EventsCalendar() {
   const events: Event[] = [
     {
       id: '1',
-      title: 'Pokemon Card Tournament',
-      date: 'March 15, 2024',
-      time: '2:00 PM - 6:00 PM',
-      location: 'SlabGang HQ',
-      description: 'Join our monthly tournament with prizes for top players! Entry fee includes refreshments and prizes for top 3 players.',
-      type: 'tournament',
+      title: 'Mississauga Sports Card',
+      date: 'October 18, 2025',
+      time: '11:00 AM - 5:00 PM',
+      location: '1245 Eglinton Ave W, Mississauga',
+      description: '',
+      type: 'show',
       color: 'blue'
     },
     {
       id: '2',
-      title: 'Card Grading Workshop',
-      date: 'March 22, 2024',
+      title: 'Hobby Con',
+      date: 'December 13, 2025',
       time: '10:00 AM - 12:00 PM',
       location: 'Community Center',
-      description: 'Learn professional card grading techniques from certified experts. Bring your cards for hands-on practice!',
-      type: 'workshop',
+      description: '',
+      type: 'show',
       color: 'red'
     },
-    {
-      id: '3',
-      title: 'Trade Meetup',
-      date: 'March 29, 2024',
-      time: '1:00 PM - 4:00 PM',
-      location: 'Local Park Pavilion',
-      description: 'Bring your cards and trade with fellow collectors! Free event with refreshments provided.',
-      type: 'trade',
-      color: 'green'
-    },
-    {
-      id: '4',
-      title: 'Special Release Event',
-      date: 'April 5, 2024',
-      time: '9:00 AM - 5:00 PM',
-      location: 'SlabGang HQ',
-      description: 'Exclusive access to new card releases and special edition items. Early bird discounts available!',
-      type: 'special',
-      color: 'purple'
-    }
   ];
 
   const getEventIcon = (type: string) => {

@@ -1,6 +1,8 @@
 import InstagramFeed from "@/components/InstagramFeed";
 import EventsCalendar from "@/components/EventsCalendar";
 
+import { BsInstagram } from "react-icons/bs";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-red-50">
@@ -106,8 +108,8 @@ export default function Home() {
       <section id="events" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Upcoming Events</h2>
-            <p className="text-xl text-gray-600">Join us for tournaments, trades, and special events</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Upcoming Shows</h2>
+            <p className="text-xl text-gray-600">Come find us at these events!</p>
           </div>
           <EventsCalendar />
         </div>
@@ -126,22 +128,22 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="flex items-center">
                   <span className="text-2xl mr-4">📧</span>
-                  <span>hello@slabgang.com</span>
+                  <span>slabgangtcg@gmail.com</span>
                 </div>
-                <div className="flex items-center">
+                {/* <div className="flex items-center">
                   <span className="text-2xl mr-4">📱</span>
                   <span>(555) 123-4567</span>
-                </div>
-                <div className="flex items-center">
+                </div> */}
+                {/* <div className="flex items-center">
                   <span className="text-2xl mr-4">📍</span>
                   <span>123 Pokemon Street, Card City, CC 12345</span>
-                </div>
+                </div> */}
               </div>
               <div className="mt-8">
                 <h4 className="text-lg font-semibold mb-4">Follow Us</h4>
                 <div className="flex space-x-4">
                   <a href="#" className="text-2xl hover:text-blue-400 transition-colors">📘</a>
-                  <a href="#" className="text-2xl hover:text-pink-400 transition-colors">📷</a>
+                  <a href="#" className="text-2xl hover:text-pink-400 transition-colors"><BsInstagram /></a>
                   <a href="#" className="text-2xl hover:text-blue-400 transition-colors">🐦</a>
                 </div>
               </div>
