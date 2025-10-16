@@ -114,7 +114,7 @@ export default function InstagramFeed() {
           onClick={closeModal}
           style={{ margin: 0 }}
         >
-          <div className={`relative max-w-[30vw] w-full max-h-[90vh] rounded-2xl p-10 transition-colors duration-300 ${theme === 'light'
+          <div className={`relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-3xl max-h-[90vh] rounded-2xl p-4 sm:p-6 md:p-8 lg:p-10 transition-colors duration-300 ${theme === 'light'
             ? 'bg-white/90 border border-gray-200/50'
             : 'bg-gray-900/60 border border-gray-700/50'
             }`}>
@@ -144,7 +144,7 @@ export default function InstagramFeed() {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Instagram embed */}
-              <div className="flex items-center justify-center min-h-[400px]">
+              <div className="flex items-center justify-center min-h-[300px] sm:min-h-[400px]">
                 <blockquote
                   className="instagram-media"
                   data-instgrm-captioned
@@ -156,7 +156,7 @@ export default function InstagramFeed() {
                     borderRadius: '12px',
                     boxShadow: '0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15)',
                     margin: '0 auto',
-                    maxWidth: '540px',
+                    maxWidth: '100%',
                     minWidth: '280px',
                     padding: '0',
                     width: '100%',
