@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "SlabGang - Premium Pokemon Card Vending",
   description: "Your premier destination for authentic Pokemon cards, grading services, and community events. Join the SlabGang community!",
+  icons: {
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
+  },
 };
 
 export default function RootLayout({

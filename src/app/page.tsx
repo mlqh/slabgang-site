@@ -44,7 +44,7 @@ export default function Home() {
           <div className='flex justify-between items-center h-20'>
             <div className='flex flex-row items-center pl-4'>
               <Image
-                src={theme === 'light' ? "/assets/Black__No_BG.png" : "/assets/White__No_BG.png"}
+                src="/assets/Coloured__No_BG.png"
                 alt="SlabGang"
                 width={55}
                 height={55}
