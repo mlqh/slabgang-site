@@ -24,3 +24,75 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+/* Instagram embed dark mode styling */
+.instagram-media {
+  min-width: 280px !important;
+  max-width: 100% !important;
+}
+
+/* Force dark backgrounds for Instagram embeds */
+iframe.instagram-media-rendered {
+  border-radius: 12px !important;
+  background: rgba(31, 41, 55, 0.5) !important;
+}
+
+/* Custom scrollbar styling */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(87, 57, 158, 0.5) rgba(31, 41, 55, 0.3);
+  padding-right: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  margin-right: 4px
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.3);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(100, 65, 182, 0.5);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(98, 63, 179, 0.7);
+}
+
+/* Scroll margin for anchor links to account for fixed header */
+section[id] {
+  scroll-margin-top: 5rem;
+}

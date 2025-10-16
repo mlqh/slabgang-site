@@ -1,57 +1,10 @@
 "use client";
 
-import { useState } from "react";
-
-interface Event {
-  id: string;
-  title: string;
-  date: string;
-  time: string;
-  location: string;
-  description: string;
-  type: "show";
-  color: string;
-  link: string;
-}
+import { events } from "@/data/events";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export default function EventsCalendar() {
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-
-  const events: Event[] = [
-    {
-      id: "1",
-      title: "Mississauga Sports Card",
-      date: "October 18, 2025",
-      time: "11:00 AM - 5:00 PM",
-      location: "1245 Eglinton Ave W, Mississauga",
-      description: "",
-      type: "show",
-      color: "blue",
-      link: "https://www.instagram.com/mississaugasportscard",
-    },
-    {
-      id: "2",
-      title: "Hobby Con",
-      date: "December 13, 2025",
-      time: "10:00 AM - 12:00 PM",
-      location: "Community Center",
-      description: "",
-      type: "show",
-      color: "red",
-      link: "https://www.instagram.com/thehobbycon",
-    },
-    {
-      id: "3",
-      title: "Coming Soon...",
-      date: "",
-      time: "",
-      location: "",
-      description: "",
-      type: "show",
-      color: "purple",
-      link: "",
-    },
-  ];
+  const { theme } = useTheme();
 
   const getEventIcon = (type: string) => {
     switch (type) {
@@ -69,30 +22,44 @@ export default function EventsCalendar() {
   };
 
   const getEventColorClasses = (color: string) => {
+    const isLight = theme === 'light';
     switch (color) {
       case "blue":
-        return "bg-blue-500/10 backdrop-blur-sm border-blue-400/20 text-blue-200 hover:bg-blue-500/15 hover:border-blue-400/30";
+        return isLight
+          ? "bg-blue-50 backdrop-blur-sm border-blue-200 text-blue-800 hover:bg-blue-100 hover:border-blue-300"
+          : "bg-blue-500/10 backdrop-blur-sm border-blue-400/20 text-blue-200 hover:bg-blue-500/15 hover:border-blue-400/30";
       case "red":
-        return "bg-red-500/10 backdrop-blur-sm border-red-400/20 text-red-200 hover:bg-red-500/15 hover:border-red-400/30";
+        return isLight
+          ? "bg-red-50 backdrop-blur-sm border-red-200 text-red-800 hover:bg-red-100 hover:border-red-300"
+          : "bg-red-500/20 backdrop-blur-sm border-red-400/20 text-red-200 hover:bg-red-500/15 hover:border-red-400/30";
       case "green":
-        return "bg-green-500/10 backdrop-blur-sm border-green-400/20 text-green-200 hover:bg-green-500/15 hover:border-green-400/30";
+        return isLight
+          ? "bg-green-50 backdrop-blur-sm border-green-200 text-green-800 hover:bg-green-100 hover:border-green-300"
+          : "bg-green-500/20 backdrop-blur-sm border-green-400/20 text-green-200 hover:bg-green-500/15 hover:border-green-400/30";
       case "purple":
-        return "bg-purple-500/10 backdrop-blur-sm border-purple-400/20 text-purple-200 hover:bg-purple-500/15 hover:border-purple-400/30";
+        return isLight
+          ? "bg-purple-50 backdrop-blur-sm border-purple-200 text-purple-800 hover:bg-purple-100 hover:border-purple-300"
+          : "bg-purple-500/20 backdrop-blur-sm border-purple-400/20 text-purple-200 hover:bg-purple-500/15 hover:border-purple-400/30";
       default:
-        return "bg-white/5 backdrop-blur-sm border-white/10 text-gray-200 hover:bg-white/10 hover:border-white/20";
+        return isLight
+          ? "bg-gray-50 backdrop-blur-sm border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-300"
+          : "bg-white/5 backdrop-blur-sm border-white/10 text-gray-200 hover:bg-white/10 hover:border-white/20";
     }
   };
 
   return (
-    <div className='space-y-4'>
+    <div className='space-y-4 animate-fade-in'>
       <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-4'>
-        {events.map((event) => (
-          <div
+        {events.map((event, index) => (
+          <a
             key={event.id}
-            className={`border rounded-2xl p-4 cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-300 ${getEventColorClasses(
+            href={event.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`border rounded-2xl p-4 cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-300 block animate-fade-in-up ${getEventColorClasses(
               event.color
             )}`}
-            onClick={() => setSelectedEvent(event)}
+            style={{ animationDelay: `${index * 0.1}s` }}
           >
             <div className='flex items-center mb-3'>
               <div
@@ -110,67 +77,28 @@ export default function EventsCalendar() {
                 {event.date ? new Date(event.date).getDate() : "?"}
               </div>
               <div>
-                <h3 className='font-semibold text-white'>{event.title}</h3>
-                <p className='text-sm text-gray-300'>{event.date}</p>
+                <h3 className={`font-semibold transition-colors duration-300 ${theme === 'light' ? 'text-gray-800' : 'text-white'
+                  }`}>{event.title}</h3>
+                <p className={`text-sm transition-colors duration-300 ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'
+                  }`}>{event.date}</p>
               </div>
             </div>
             <div className='flex items-center mb-2'>
               <span className='text-lg mr-2'>{getEventIcon(event.type)}</span>
               <span className='text-sm font-medium'>{event.time}</span>
             </div>
-            <p className='text-sm text-gray-300 mb-2'>📍 {event.location}</p>
-            <p className='text-gray-300 text-sm line-clamp-2'>{event.description}</p>
-            <button className='mt-4 text-sm font-semibold hover:underline text-blue-400'>Learn More →</button>
-          </div>
+            <p className={`text-sm mb-2 ml-0.5 transition-colors duration-300 ${theme === 'light' ? 'text-gray-600' : 'text-gray-200'
+              }`}>📍<span className="ml-3">{event.location}</span></p>
+            <p className={`text-sm line-clamp-2 transition-colors duration-300 ${theme === 'light' ? 'text-gray-500' : 'text-gray-300'
+              }`}>{event.description}</p>
+            <div className={`mt-3 text-sm font-semibold hover:translate-x-2 hover:scale-105 transition-all duration-200 ${theme === 'light'
+              ? 'text-gray-700 hover:text-gray-900'
+              : 'text-white/90 hover:text-white'
+              }`}>Learn More →</div>
+          </a>
         ))}
       </div>
 
-      {/* Event Details Modal */}
-      {selectedEvent && (
-        <div className='fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50'>
-          <div className='bg-white/10 backdrop-blur-md rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-white/20'>
-            <div className='p-6'>
-              <div className='flex justify-between items-start mb-4'>
-                <h2 className='text-2xl font-bold text-white'>{selectedEvent.title}</h2>
-              </div>
-
-              <div className='space-y-4'>
-                <div className='flex items-center'>
-                  <span className='text-lg mr-3'>{getEventIcon(selectedEvent.type)}</span>
-                  <div>
-                    <p className='font-semibold text-white'>{selectedEvent.date}</p>
-                    <p className='text-gray-300'>{selectedEvent.time}</p>
-                  </div>
-                </div>
-
-                <div className='flex items-center'>
-                  <span className='text-lg mr-3'>📍</span>
-                  <p className='text-gray-300'>{selectedEvent.location}</p>
-                </div>
-
-                <div>
-                  <p className='text-gray-300'>{selectedEvent.description}</p>
-                </div>
-
-                <div className='flex gap-3 pt-4'>
-                  <button
-                    className='flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors'
-                    onClick={() => window.open(selectedEvent.link, "_blank")}
-                  >
-                    More Info
-                  </button>
-                  <button
-                    onClick={() => setSelectedEvent(null)}
-                    className='flex-1 border border-gray-600 text-gray-300 py-2 px-4 rounded-lg font-semibold hover:bg-gray-700 transition-colors'
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

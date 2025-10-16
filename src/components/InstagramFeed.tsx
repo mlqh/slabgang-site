@@ -1,176 +1,184 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
-
-interface InstagramPost {
-  id: string;
-  media_url: string;
-  caption: string;
-  permalink: string;
-  timestamp: string;
-  media_type?: 'IMAGE' | 'VIDEO' | 'CAROUSEL_ALBUM';
-}
+import { instagramPosts } from '@/data/instagram';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function InstagramFeed() {
-  const [posts, setPosts] = useState<InstagramPost[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { theme } = useTheme();
+  const [selectedPost, setSelectedPost] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const fetchInstagramPosts = async () => {
-      try {
-        const response = await fetch('/api/instagram');
+    setMounted(true);
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch Instagram posts');
-        }
+    // Load Instagram's embed script
+    const script = document.createElement('script');
+    script.src = '//www.instagram.com/embed.js';
+    script.async = true;
+    document.body.appendChild(script);
 
-        const data = await response.json();
-        setPosts(data.posts || []);
-      } catch (err) {
-        console.error('Error fetching Instagram posts:', err);
-        setError('Unable to load Instagram posts');
-
-        // Fallback to mock data if API fails
-        const mockPosts: InstagramPost[] = [
-          {
-            id: '1',
-            media_url: '/api/placeholder/400/400',
-            caption: 'Just got this amazing Charizard! 🔥 #PokemonCards #Charizard',
-            permalink: 'https://instagram.com/p/example1',
-            timestamp: '2024-01-15T10:00:00Z'
-          },
-          {
-            id: '2',
-            media_url: '/api/placeholder/400/400',
-            caption: 'Tournament day! Who\'s ready to battle? ⚡ #PokemonTournament',
-            permalink: 'https://instagram.com/p/example2',
-            timestamp: '2024-01-14T15:30:00Z'
-          },
-          {
-            id: '3',
-            media_url: '/api/placeholder/400/400',
-            caption: 'New arrivals this week! Check out these vintage cards 📦',
-            permalink: 'https://instagram.com/p/example3',
-            timestamp: '2024-01-13T09:15:00Z'
-          },
-          {
-            id: '4',
-            media_url: '/api/placeholder/400/400',
-            caption: 'Grading session in progress! Quality is everything ⭐',
-            permalink: 'https://instagram.com/p/example4',
-            timestamp: '2024-01-12T14:20:00Z'
-          },
-          {
-            id: '5',
-            media_url: '/api/placeholder/400/400',
-            caption: 'Community trade meetup was a huge success! 🎉',
-            permalink: 'https://instagram.com/p/example5',
-            timestamp: '2024-01-11T18:45:00Z'
-          },
-          {
-            id: '6',
-            media_url: '/api/placeholder/400/400',
-            caption: 'Rare find of the day! This Pikachu is incredible ⚡',
-            permalink: 'https://instagram.com/p/example6',
-            timestamp: '2024-01-10T12:30:00Z'
-          },
-          {
-            id: '7',
-            media_url: '/api/placeholder/400/400',
-            caption: 'Behind the scenes: How we authenticate cards 🔍',
-            permalink: 'https://instagram.com/p/example7',
-            timestamp: '2024-01-09T16:00:00Z'
-          },
-          {
-            id: '8',
-            media_url: '/api/placeholder/400/400',
-            caption: 'New member of the SlabGang family! Welcome! 👋',
-            permalink: 'https://instagram.com/p/example8',
-            timestamp: '2024-01-08T11:15:00Z'
-          }
-        ];
-        setPosts(mockPosts);
-      } finally {
-        setLoading(false);
+    return () => {
+      // Cleanup script on unmount
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
       }
     };
-
-    fetchInstagramPosts();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
-          <div key={item} className="aspect-square bg-gray-200 rounded-lg animate-pulse">
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  }
+  useEffect(() => {
+    // Process embeds when a post is selected
+    if (selectedPost && typeof window !== 'undefined' && window.instgrm && window.instgrm.Embeds && typeof window.instgrm.Embeds.process === 'function') {
+      setTimeout(() => {
+        window.instgrm!.Embeds.process();
+      }, 100);
+    }
+  }, [selectedPost]);
 
-  if (error) {
+  const openModal = (url: string) => {
+    setSelectedPost(url);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeModal = () => {
+    setSelectedPost(null);
+    document.body.style.overflow = 'unset';
+  };
+
+  if (instagramPosts.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-gray-500">Unable to load Instagram posts. Please try again later.</p>
+        <p className="text-gray-400">No Instagram posts to display yet!</p>
       </div>
     );
   }
 
+  // Extract post ID from URL to construct thumbnail URL
+  const getPostId = (url: string) => {
+    const match = url.match(/\/p\/([^\/]+)/);
+    return match ? match[1] : '';
+  };
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {posts.map((post) => (
-        <a
-          key={post.id}
-          href={post.permalink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="aspect-square rounded-lg overflow-hidden hover:scale-105 transition-transform duration-300 group relative"
-        >
-          <div className="w-full h-full relative">
-            {post.media_url && !post.media_url.includes('/api/placeholder/') ? (
-              // Real Instagram image
+    <>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
+        {instagramPosts.map((post) => {
+          const postId = getPostId(post.url);
+          // Instagram's CDN provides thumbnails at this URL pattern
+          const thumbnailUrl = `https://www.instagram.com/p/${postId}/media/?size=l`;
+
+          return (
+            <button
+              key={post.id}
+              onClick={() => openModal(post.url)}
+              className="aspect-square rounded-xl overflow-hidden border border-purple-500/30 hover:border-purple-400/50 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20 group relative bg-gray-800"
+            >
+              {/* Thumbnail image */}
               <Image
-                src={post.media_url}
-                alt={post.caption || 'Instagram post'}
+                src={thumbnailUrl}
+                alt="Instagram post"
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 50vw, 25vw"
+                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
-            ) : (
-              // Fallback for mock data or missing images
-              <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
-                <div className="text-center p-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
-                    <span className="text-white text-2xl">
-                      {post.media_type === 'VIDEO' ? '🎥' : '📷'}
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-600 line-clamp-2">{post.caption}</p>
+
+              {/* Overlay on hover */}
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center">
+                  <svg
+                    className="w-12 h-12 mx-auto mb-2 text-white"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                  </svg>
+                  <p className="text-white text-sm font-medium">
+                    View Post
+                  </p>
                 </div>
               </div>
-            )}
+            </button>
+          );
+        })}
+      </div>
 
-            {/* Overlay with caption on hover */}
-            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all duration-300 flex items-end">
-              <div className="p-3 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                <p className="text-sm line-clamp-2">{post.caption}</p>
-                <div className="flex items-center mt-2 text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <span className="mr-2">
-                    {post.media_type === 'VIDEO' ? '🎥' : '📷'}
-                  </span>
-                  <span>View on Instagram →</span>
-                </div>
+      {/* Modal */}
+      {selectedPost && mounted && createPortal(
+        <div
+          className={`fixed inset-0 backdrop-blur-md z-[100] flex items-center justify-center p-4 animate-fade-in transition-colors duration-300 ${theme === 'light'
+            ? 'bg-white/60'
+            : 'bg-gray/60'
+            }`}
+          onClick={closeModal}
+          style={{ margin: 0 }}
+        >
+          <div className={`relative max-w-[30vw] w-full max-h-[90vh] rounded-2xl p-10 transition-colors duration-300 ${theme === 'light'
+            ? 'bg-white/90 border border-gray-200/50'
+            : 'bg-gray-900/60 border border-gray-700/50'
+            }`}>
+            {/* Close button */}
+            <button
+              onClick={closeModal}
+              className={`absolute top-2 right-2 z-10 rounded-full p-1.5 transition-colors duration-200 shadow-lg ${theme === 'light'
+                ? 'bg-gray-200/90 hover:bg-gray-300 text-gray-800'
+                : 'bg-gray-800/90 hover:bg-gray-700 text-white'
+                }`}
+              aria-label="Close modal"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+            <div
+              className="relative w-full max-h-[85vh] overflow-y-auto custom-scrollbar"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Instagram embed */}
+              <div className="flex items-center justify-center min-h-[400px]">
+                <blockquote
+                  className="instagram-media"
+                  data-instgrm-captioned
+                  data-instgrm-permalink={`${selectedPost}?utm_source=ig_embed&utm_campaign=loading`}
+                  data-instgrm-version="14"
+                  style={{
+                    background: '#000000',
+                    border: '0',
+                    borderRadius: '12px',
+                    boxShadow: '0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15)',
+                    margin: '0 auto',
+                    maxWidth: '540px',
+                    minWidth: '280px',
+                    padding: '0',
+                    width: '100%',
+                  }}
+                />
               </div>
             </div>
           </div>
-        </a>
-      ))}
-    </div>
+        </div>,
+        document.body
+      )}
+    </>
   );
+}
+
+// Extend Window interface for TypeScript
+declare global {
+  interface Window {
+    instgrm?: {
+      Embeds: {
+        process: () => void;
+      };
+    };
+  }
 }

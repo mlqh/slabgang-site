@@ -1,7 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "www.instagram.com",
+        port: "",
+        pathname: "/p/**/media/**",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
