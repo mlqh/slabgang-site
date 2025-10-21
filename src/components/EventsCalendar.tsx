@@ -87,8 +87,11 @@ export default function EventsCalendar() {
               <span className='text-lg mr-2'>{getEventIcon(event.type)}</span>
               <span className='text-sm font-medium'>{event.time}</span>
             </div>
-            <p className={`text-sm mb-2 ml-0.5 transition-colors duration-300 ${theme === 'light' ? 'text-gray-600' : 'text-gray-200'
-              }`}>📍<span className="ml-3">{event.location}</span></p>
+            <div className='flex'>
+              📍
+              <p className={`text-sm mb-2 ml-2.5 transition-colors duration-300 ${theme === 'light' ? 'text-gray-600' : 'text-gray-200'
+                }`}><span>{event.location}</span></p>
+            </div>
             <p className={`text-sm line-clamp-2 transition-colors duration-300 ${theme === 'light' ? 'text-gray-500' : 'text-gray-300'
               }`}>{event.description}</p>
             <div className={`mt-3 text-sm font-semibold hover:translate-x-2 hover:scale-105 transition-all duration-200 ${theme === 'light'
