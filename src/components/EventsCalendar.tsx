@@ -85,7 +85,7 @@ export default function EventsCalendar() {
             </div>
             <div className='flex items-center mb-2'>
               <span className='text-lg mr-2'>{getEventIcon(event.type)}</span>
-              <span className='text-sm font-medium'>{event.time}</span>
+              <span className='text-sm font-bold'>{event.time}</span>
             </div>
             <div className='flex'>
               📍
@@ -94,7 +94,7 @@ export default function EventsCalendar() {
             </div>
             <p className={`text-sm line-clamp-2 transition-colors duration-300 ${theme === 'light' ? 'text-gray-500' : 'text-gray-300'
               }`}>{event.description}</p>
-            <div className={`mt-3 text-sm font-semibold hover:translate-x-2 hover:scale-105 transition-all duration-200 ${theme === 'light'
+            <div className={`mt-1 ml-2 text-sm font-semibold hover:translate-x-2 hover:scale-105 transition-all duration-200 ${theme === 'light'
               ? 'text-gray-700 hover:text-gray-900'
               : 'text-white/90 hover:text-white'
               }`}>Learn More →</div>

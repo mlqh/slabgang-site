@@ -13,14 +13,14 @@ export interface Event {
 export const events: Event[] = [
   {
     id: "1",
-    title: "North American Card Exchange",
-    date: "November 23, 2025",
-    time: "9:00 AM - 6:00 PM",
-    location: "2638 Steeles Ave E, Brampton",
+    title: "Mewtopia",
+    date: "December 6, 2025",
+    time: "10:00 AM - 4:00 PM",
+    location: "Queen's Manor Event Center, Brampton",
     description: "",
     type: "show",
     color: "red",
-    link: "https://www.instagram.com/northamericancardexchange/",
+    link: "https://www.instagram.com/mewtopiacanada",
   },
   {
     id: "2",
