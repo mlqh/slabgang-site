@@ -5,16 +5,22 @@ export const instagramPosts = [
   },
   {
     id: '2',
-    url: 'https://www.instagram.com/p/DPSVJkGj895/',
+    url: 'https://www.instagram.com/p/DPsYl_KDEAp/',
   },
   {
     id: '3',
-    url: 'https://www.instagram.com/p/DPsYl_KDEAp/',
+    url: 'https://www.instagram.com/p/DSVoxI1DxIw/',
   },
-  // {
-  //   id: '4',
-  //   url: 'https://www.instagram.com/p/DPhTRVtkRUZ/',
-  // },
-  // Add more Instagram post URLs here
-  // To get the URL: go to the post on Instagram, click the three dots, select "Embed", and copy the URL from the embed code
+  {
+    id: '4',
+    url: 'https://www.instagram.com/p/DSG5FPXFRIh/',
+  },
+  {
+    id: '5',
+    url: 'https://www.instagram.com/p/DSwKPm-kXuW/',
+  },
+  {
+    id: '6',
+    url: 'https://www.instagram.com/p/DPhTRVtkRUZ/',
+  },
 ];
